@@ -131,3 +131,28 @@ def e_vinte_oito(a, b):
 
     print("Resultado do exercício 28 com as entradas [", a, ", ", b, "] : ", s)    
 
+#exercício 29
+def e_vinte_nove(a, b, c):
+
+    negacao_a = porta_nor([a, a])
+    negacao_b = porta_nor([b, b])
+    negacao_c = porta_nor([c, c])
+
+    b_nor_c = porta_nor([b, c])
+    primeira_parte = porta_nor([porta_nor([negacao_b, negacao_c]), b_nor_c])
+
+    a_and_b_and_c = porta_nor([negacao_a, negacao_b, negacao_c])
+    segunda_parte = porta_nor([a_and_b_and_c, a_and_b_and_c])
+
+    terceira_parte = porta_nor([primeira_parte, segunda_parte])
+
+    quarta_parte = porta_nor([[porta_nor([a, c])], negacao_b])
+
+    quinta_parte = porta_nor([terceira_parte, quarta_parte])
+    quinta_parte = porta_nor([quinta_parte, quinta_parte])
+
+    sexta_parte = porta_nor([quinta_parte, a])
+
+    s = porta_nor([sexta_parte, sexta_parte])
+
+    print("Resultado do exercício 28 com as entradas [", a, ", ", b, ", ", c, "] : ", s)        
