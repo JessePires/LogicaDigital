@@ -1,4 +1,5 @@
 import math
+
 def validacao(entrada):
     for x in entrada:
         if x > 1 or x < 0:
@@ -74,7 +75,7 @@ def somador_subtrator(a, b, op, c_in, decoder):
 
     primeira_parte_s =  porta_and(decoder, porta_and(porta_and(c_in, porta_xnor(a, b))))
     segunda_parte_s = porta_and(porta_not(c_in), porta_xor(a, b))
-    s = porta_or(primeira_parte_s, segunda_parte_s)
+    s = porta_and(decoder, porta_or(primeira_parte_s, segunda_parte_s))
 
     primeira_parte_cout = porta_and(a, porta_or(porta_and(porta_not(op), porta_and(decoder, porta_or(c_in, b))), porta_and(b, c_in)))
     segunda_parte_cout = porta_and(porta_not(a), porta_and(op, porta_or(porta_and(porta_not(c_in), b), porta_and(c_in, decoder))))
@@ -91,7 +92,7 @@ def decoder(f0, f1, f2):
     s_not = porta_and(porta_not(f0), f1, porta_not(f2))
     s_nand = porta_and(porta_not(f0), f1, f2)
     s_nor = porta_and(f0, porta_not(f1), porta_not(f2))
-    s_xor = porta_and(f0, porta_not(f1), f1)
+    s_xor = porta_and(f0, porta_not(f1), f2)
     s_soma_subtrator = porta_or(porta_and(f0, f1), porta_and(f0, f1))
     s_op = f2
 
@@ -107,16 +108,18 @@ def logical_unit(a, b, in_and, in_or, in_not, in_nand, in_nor, in_xor):
     s_nor = porta_and(porta_nor(a, b), in_nor)
     s_xor = porta_and(porta_xor(a, b), in_xor)
 
+
     return a, b, s_and, s_or, s_not, s_nand, s_nor, s_xor
 
 
 def ula_1_bit(f0, f1, f2, a, b, c_in):
 
     s_and, s_or, s_not, s_nand, s_nor, s_xor, s_soma_subtrator, s_op = decoder(f0, f1, f2)
-    s_a, s_b, s_and, s_or, s_not, s_nand, s_nor, s_xor = logical_unit(a, b, s_and, s_or, s_not, s_nand, s_nor, s_xor)
+    s_a, s_b, d_and, d_or, d_not, d_nand, d_nor, d_xor = logical_unit(a, b, s_and, s_or, s_not, s_nand, s_nor, s_xor)
     soma, c_out = somador_subtrator(s_a, s_b, s_op, c_in, s_soma_subtrator)
     
-    s = porta_or(s_and, s_or, s_not, s_nand, s_nor, s_xor, soma)
+
+    s = porta_or(d_and, d_or, d_not, d_nand, d_nor, d_xor, soma)
 
     return s, c_out
 
@@ -178,25 +181,45 @@ def ula_8bits(f0, f1, f2, a ,b ,s):
 
 
 def main():
+ 
+  
+    opcao_list = []
 
-    f0 = 1
-    f1 = 1
-    f2 = 1
+    
+    print("Este programa simula o funcionamento de uma Unidade Lógica Aritmética - ULA.\nAs opções são:")
+    print("000 ---> porta lógica AND")
+    print("001 ---> porta lógica OR")
+    print("010 ---> porta lógica NOT")
+    print("011 ---> porta lógica NAND")
+    print("100 ---> porta lógica NOR")
+    print("101 ---> porta lógica XOR")
+    print("110 ---> SOMADOR")
+    print("111 ---> SUBTRATOR")
 
-    a = 128
-    b = 1
+  
+
+    
+    opcao = input("\nDigite a opção desejada: ")
+    opcao_list.append(int(opcao[0]))
+        
+    opcao_list.append(int(opcao[1]))
+    opcao_list.append(int(opcao[2]))
+
+    
+
+    a = int(input("\nDigite o valor de a (deve ser <= 255): "))
+    b = int(input("Digite o valor de b (deve ser <= 255): "))
+    
 
     s_bin = [0,0,0,0,0,0,0,0]
 
-    c_out8 = ula_8bits(f0, f1, f2, conversor_dec_bin(a) ,conversor_dec_bin(b), s_bin)
-    
+
+    c_out8 = ula_8bits(opcao_list[0], opcao_list[1], opcao_list[2], conversor_dec_bin(a) ,conversor_dec_bin(b), s_bin)
+
     if c_out8 == 1:
         print("Estouro")
-    else:
-        for num in s_bin:
-            print(num, end=" ")
-        print("\n")
-    
+
     s_dec = conversor_bin_dec(s_bin)
-    print(s_dec)
+    print("\nResultado da operação:", s_dec)
+
 main()
