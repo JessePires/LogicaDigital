@@ -216,10 +216,11 @@ def main():
 
     c_out8 = ula_8bits(opcao_list[0], opcao_list[1], opcao_list[2], conversor_dec_bin(a) ,conversor_dec_bin(b), s_bin)
 
-    if c_out8 == 1:
-        print("Estouro")
+    if c_out8 != 1:
+        s_dec = conversor_bin_dec(s_bin)
+        print("\nResultado da operação:", s_dec)
+    else:
+        print("HOUVE ESTOURO!")
 
-    s_dec = conversor_bin_dec(s_bin)
-    print("\nResultado da operação:", s_dec)
 
 main()
