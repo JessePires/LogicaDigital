@@ -2,7 +2,7 @@ from time import sleep
 import math
 from datetime import datetime
 now = datetime.now()
-
+import os
 
 def p_nand_2(a, b):
     return int(not(a and b))
@@ -174,28 +174,7 @@ def retornoHoras(hora):
     #USADO PARA FORMATAR FORMATO DE 24H PARA 12H
     if(hora >= 13):
         am = '10111100'
-        if(hora == 13):
-            hora = 1
-        elif(hora == 14):
-            hora = 2
-        elif(hora == 15):
-            hora = 3
-        elif(hora == 16):
-            hora = 4
-        elif(hora == 17):
-            hora = 5
-        elif(hora == 18):
-            hora = 6
-        elif(hora == 19):
-            hora = 7
-        elif(hora == 20):
-            hora = 8
-        elif(hora == 21):
-            hora = 9
-        elif(hora == 22):
-            hora = 10
-        elif(hora == 23):
-            hora = 11
+        return hora-12
     else:
         am = '10101100'#AM
 
@@ -229,7 +208,7 @@ def contSegundos():
     ck = int(pr, 2) * 2
     while True:
         try:
-            if cl == ''.join([str(q) for q in qfSeg[-2::-1]]):
+            if cl == ''.join([str(q) for q in qfSeg[5::-1]]):
                 for i in range(len(qfSeg)):
                     qfSeg[i] = qa[i] = 0
                 ck = 0
@@ -239,9 +218,10 @@ def contSegundos():
              
             
             #SEPARANDO HORAS, MINUTOS E SEGUNDOS EM DEZENA E UNIDADE
-            dezenaS, unidadeS = divisionOfBinary(qfSeg[-2::-1])
-            dezenaM, unidadeM = divisionOfBinary(qfMin[-2::-1])
-            dezenaH, unidadeH = divisionOfBinaryHour(qfH[-2::-1])
+            #EXPLICAÇÃO PARA [5::-1] = [START:END:STEP]
+            dezenaS, unidadeS = divisionOfBinary(qfSeg[5::-1])
+            dezenaM, unidadeM = divisionOfBinary(qfMin[5::-1])
+            dezenaH, unidadeH = divisionOfBinaryHour(qfH[3::-1])
 
             
             #CONVERTENDO VALORES PEGOS PARA STRING
@@ -255,7 +235,13 @@ def contSegundos():
 
             #CONCATENANDO STRING E PRINTANDO RESULTADO
             binario = srtDezenaH+srtUnidadeH+srtDezenaM+srtUnidadeM+srtDezenaS+srtUnidadeS+srtAM
-            print("\n"*100)
+            if (os.name == 'nt'): 
+                os.system('cls')
+            elif (os.name =='posix'):
+                 os.system('clear')
+            else: 
+                print('\n'*120)
+            # print("\n"*100)
             print(segmentos_7(binario))
 
             # 1/2 segundo em baixa e 1/2 segundo em alta
@@ -300,7 +286,7 @@ def contMin():
         try:
             contSegundos()
             for i in range(2):
-                if cl == ''.join([str(q) for q in qfMin[-2::-1]]):
+                if cl == ''.join([str(q) for q in qfMin[5::-1]]):
                     for i in range(len(qfMin)):
                         qfMin[i] = qa[i] = 0
                     ck = 0
@@ -346,7 +332,7 @@ def dozehoras():
             contMin()
             
             for i in range(2):
-                if cl == ''.join([str(q) for q in qfH[-2::-1]]):
+                if cl == ''.join([str(q) for q in qfH[3::-1]]):
                     for i in range(len(qfH)):
                         qfH[i] = qa[i] = 0
                     ck = 0
