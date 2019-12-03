@@ -56,10 +56,10 @@ nb = {
 }
 
 #VARIAVEIS GLOBAIS
-qfH = []
-qfMin = []
-qfSeg = []
-am = []
+qf_h = []
+qf_min = []
+qf_seg = []
+am_pm = []
 flag = 0
 
 
@@ -115,22 +115,22 @@ def separador_de_bits(dec):
     return dezena, unidade
 
 #SEPARADOR DE BINARIO DAS HORAS
-def divisionOfBinaryHour(horas):
-    horasDec = conversor_bin_dec(horas)
-    dezena, unidade = separador_de_bits(horasDec)
-    binDezena = conversor_dec_bin(dezena)
-    binUnidade = conversor_dec_bin(unidade)
+def divisao_de_hora_binaria(horas):
+    horas_dec = conversor_bin_dec(horas)
+    dezena, unidade = separador_de_bits(horas_dec)
+    bin_dezena = conversor_dec_bin(dezena)
+    bin_unidade = conversor_dec_bin(unidade)
 
-    return binDezena, binUnidade
+    return bin_dezena, bin_unidade
 
 #DIVISOR DE BINARIO DOS SEGUNTOS E MINUTOS
-def divisionOfBinary(horas):
-    horasDec = conversor_bin_decOther(horas)
-    dezena, unidade = separador_de_bits(horasDec)
-    binDezena = conversor_dec_bin(dezena)
-    binUnidade = conversor_dec_bin(unidade)
+def divisao_de_binario(horas):
+    horas_dec = conversor_bin_decOther(horas)
+    dezena, unidade = separador_de_bits(horas_dec)
+    bin_dezena = conversor_dec_bin(dezena)
+    bin_unidade = conversor_dec_bin(unidade)
 
-    return binDezena, binUnidade
+    return bin_dezena, bin_unidade
 
 #CONVERTE DECIMAL PARA BINARIO DE 6 BYTES
 def conversor_dec_bin2(num):
@@ -154,41 +154,41 @@ def conversor_dec_bin2(num):
     return bin_correto[2:8:1]
 
 
-#RETORNA A HORA PARA FORMADO AM/PM
-def retornoHoras(hora):
-    global am
+#RETORNA A HORA PARA FORMADO am_pm/PM
+def retorno_horas(hora):
+    global am_pm
 
     #USADO PARA CONVERTER 0H PARA 12H
     if(hora == 0):
-        am = '10101100'#AM
+        am_pm = '10101100'#am_pm
         return 12
     
-    #USADO PARA ALTERAR AM/PM
+    #USADO PARA ALTERAR am_pm/PM
     if(hora == 12):
-        if(am == '10101100'):#AM
-            am = '10111100' #PM
+        if(am_pm == '10101100'):#am_pm
+            am_pm = '10111100' #PM
         else:
-            am = '10101100'#AM
+            am_pm = '10101100'#am_pm
         return hora
 
     #USADO PARA FORMATAR FORMATO DE 24H PARA 12H
     if(hora >= 13):
-        am = '10111100'
+        am_pm = '10111100'
         return hora-12
     else:
-        am = '10101100'#AM
+        am_pm = '10101100'#am_pm
 
     return hora
 
-def contSegundos():
+def cont_segundos():
     global flag
     now = datetime.now()
-    global qfSeg
-    global am
+    global qf_seg
+    global am_pm
     
     #N_FF == NUMERO DE FLIP FLOP'S
     n_ff = 6  # PODE MODIFICAR
-    qfSeg, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
+    qf_seg, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
 
     # SEGUNDOS DO HORARIO ATUAL DO COMPUTADOR
     segundos = (conversor_dec_bin2(now.second))
@@ -199,7 +199,7 @@ def contSegundos():
     else:
         pr = '000000'
     for i, p in enumerate(pr[-1::-1]):
-        qfSeg[i] = qa[i] = int(p)
+        qf_seg[i] = qa[i] = int(p)
     
     #CLEAR
     cl = '111100' # PODE MODIFICAR
@@ -208,9 +208,9 @@ def contSegundos():
     ck = int(pr, 2) * 2
     while True:
         try:
-            if cl == ''.join([str(q) for q in qfSeg[5::-1]]):
-                for i in range(len(qfSeg)):
-                    qfSeg[i] = qa[i] = 0
+            if cl == ''.join([str(q) for q in qf_seg[5::-1]]):
+                for i in range(len(qf_seg)):
+                    qf_seg[i] = qa[i] = 0
                 ck = 0
                 return
 
@@ -219,22 +219,22 @@ def contSegundos():
             
             #SEPARANDO HORAS, MINUTOS E SEGUNDOS EM DEZENA E UNIDADE
             #EXPLICAÇÃO PARA [5::-1] = [START:END:STEP]
-            dezenaS, unidadeS = divisionOfBinary(qfSeg[5::-1])
-            dezenaM, unidadeM = divisionOfBinary(qfMin[5::-1])
-            dezenaH, unidadeH = divisionOfBinaryHour(qfH[3::-1])
+            dezena_s, unidade_s = divisao_de_binario(qf_seg[5::-1])
+            dezena_m, unidade_m = divisao_de_binario(qf_min[5::-1])
+            dezena_h, unidade_h = divisao_de_hora_binaria(qf_h[3::-1])
 
             
             #CONVERTENDO VALORES PEGOS PARA STRING
-            srtDezenaS = str(''.join(str(i) for i in dezenaS))
-            srtUnidadeS = str(''.join(str(i) for i in unidadeS))
-            srtDezenaM = str(''.join(str(i) for i in dezenaM))
-            srtUnidadeM = str(''.join(str(i) for i in unidadeM))
-            srtDezenaH = str(''.join(str(i) for i in dezenaH))
-            srtUnidadeH = str(''.join(str(i) for i in unidadeH))
-            srtAM = str(''.join(str(i) for i in am))
+            srt_dezena_s = str(''.join(str(i) for i in dezena_s))
+            srt_unidade_s = str(''.join(str(i) for i in unidade_s))
+            srt_dezena_m = str(''.join(str(i) for i in dezena_m))
+            srt_unidade_m = str(''.join(str(i) for i in unidade_m))
+            srt_dezena_h = str(''.join(str(i) for i in dezena_h))
+            srt_unidade_h = str(''.join(str(i) for i in unidade_h))
+            str_am_pm = str(''.join(str(i) for i in am_pm))
 
             #CONCATENANDO STRING E PRINTANDO RESULTADO
-            binario = srtDezenaH+srtUnidadeH+srtDezenaM+srtUnidadeM+srtDezenaS+srtUnidadeS+srtAM
+            binario = srt_dezena_h+srt_unidade_h+srt_dezena_m+srt_unidade_m+srt_dezena_s+srt_unidade_s+str_am_pm
             if (os.name == 'nt'): 
                 os.system('cls')
             elif (os.name =='posix'):
@@ -250,20 +250,20 @@ def contSegundos():
             qa[0] = ff_jk(ck=(ck % 2), j=1, k=1, qa=qa[0])
             for i in range(1, (n_ff + 1)):
                 if (ck + 1) % (2 ** i) == 0:
-                    qa[i] = ff_jk(ck=qfSeg[i - 1], j=1, k=1, qa=qa[i])
-                    qfSeg[i - 1] = qa[i - 1]
+                    qa[i] = ff_jk(ck=qf_seg[i - 1], j=1, k=1, qa=qa[i])
+                    qf_seg[i - 1] = qa[i - 1]
             ck += 1
         except KeyboardInterrupt:
             break
 
-def contMin():
-    global qfMin
+def cont_min():
+    global qf_min
     global flag
     now = datetime.now()
 
     #N_FF == NUMERO DE FLIP FLOP'S
     n_ff = 6  # PODE MODIFICAR
-    qfMin, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
+    qf_min, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
 
     # MINUTOS DO HORARIO ATUAL DO COMPUTADOR
     minutos = conversor_dec_bin2(now.minute)
@@ -274,7 +274,7 @@ def contMin():
     else:
         pr = '000000'
     for i, p in enumerate(pr[-1::-1]):
-        qfMin[i] = qa[i] = int(p)
+        qf_min[i] = qa[i] = int(p)
 
 
     #CLEAR
@@ -284,34 +284,34 @@ def contMin():
     ck = int(pr, 2) * 2
     while True:
         try:
-            contSegundos()
+            cont_segundos()
             for i in range(2):
-                if cl == ''.join([str(q) for q in qfMin[5::-1]]):
-                    for i in range(len(qfMin)):
-                        qfMin[i] = qa[i] = 0
+                if cl == ''.join([str(q) for q in qf_min[5::-1]]):
+                    for i in range(len(qf_min)):
+                        qf_min[i] = qa[i] = 0
                     ck = 0
                     return
                 # 1/2 segundo em baixa e 1/2 segundo em alta
                 qa[0] = ff_jk(ck=(ck % 2), j=1, k=1, qa=qa[0])
                 for i in range(1, (n_ff + 1)):
                     if (ck + 1) % (2 ** i) == 0:
-                        qa[i] = ff_jk(ck=qfMin[i - 1], j=1, k=1, qa=qa[i])
-                        qfMin[i - 1] = qa[i - 1]
+                        qa[i] = ff_jk(ck=qf_min[i - 1], j=1, k=1, qa=qa[i])
+                        qf_min[i - 1] = qa[i - 1]
                 ck += 1
         except KeyboardInterrupt:
             break
 
-def dozehoras():
+def doze_horas():
     global flag
-    global qfH
-    global am
+    global qf_h
+    global am_pm
 
     #N_FF == NUMERO DE FLIP FLOP'S
     n_ff = 4  # PODE MODIFICAR
-    qfH, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
+    qf_h, qa = [0] * (n_ff + 1), [0] * (n_ff + 1)
 
     # HORAS DO HORARIO ATUAL DO COMPUTADOR
-    horas = retornoHoras(now.hour)
+    horas = retorno_horas(now.hour)
     horas = conversor_dec_bin(horas)
 
     #SE FLAG == 0, ENTAO É SETADO MINUTOS DO HORARIO PEGO ACIMA
@@ -320,7 +320,7 @@ def dozehoras():
     else:
         pr = '0001'  # PODE MODIFICAR
     for i, p in enumerate(pr[-1::-1]):
-        qfH[i] = qa[i] = int(p)
+        qf_h[i] = qa[i] = int(p)
 
     #CLEAR
     cl = '1101' # PODE MODIFICAR
@@ -329,26 +329,26 @@ def dozehoras():
     ck = int(pr, 2) * 2
     while True:
         try:
-            contMin()
+            cont_min()
             
             for i in range(2):
-                if cl == ''.join([str(q) for q in qfH[3::-1]]):
-                    for i in range(len(qfH)):
-                        qfH[i] = qa[i] = 0
+                if cl == ''.join([str(q) for q in qf_h[3::-1]]):
+                    for i in range(len(qf_h)):
+                        qf_h[i] = qa[i] = 0
                     ck = 0
                     
                 # 1/2 segundo em baixa e 1/2 segundo em alta
                 qa[0] = ff_jk(ck=(ck % 2), j=1, k=1, qa=qa[0])
                 for i in range(1, (n_ff + 1)):
                     if (ck + 1) % (2 ** i) == 0:
-                        qa[i] = ff_jk(ck=qfH[i - 1], j=1, k=1, qa=qa[i])
-                        qfH[i - 1] = qa[i - 1]
+                        qa[i] = ff_jk(ck=qf_h[i - 1], j=1, k=1, qa=qa[i])
+                        qf_h[i - 1] = qa[i - 1]
                 ck += 1
 
-            #CHAMEI FUNÇÃO PARA ALTERAR AM/PM
-            horas = retornoHoras(conversor_bin_dec(qfH[-2::-1]))
+            #CHam_pmEI FUNÇÃO PARA ALTERAR am_pm/PM
+            horas = retorno_horas(conversor_bin_dec(qf_h[-2::-1]))
         except KeyboardInterrupt:
             break
 
 
-dozehoras()
+doze_horas()
